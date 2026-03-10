@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temple Booking System - Temple Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-brand">
+                <i class="fa-solid fa-dharmachakra"></i>
+                Bhagti Marg
+            </a>
+            <button class="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="nav-links">
+                <a href="index.html" class="nav-item">Home</a>
+                <a href="temples.html" class="nav-item active">Temples</a>
+                <a href="booking.html" class="nav-item">Bookings</a>
+            </div>
+            <div class="nav-buttons" id="auth-buttons">
+                <!-- Managed by target script.js -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="py-5">
+        <div class="container" id="contentContainer">
+
+            <!-- Loader -->
+            <div id="loader" class="text-center" style="padding: 100px 0;">
+                <i class="fa-solid fa-dharmachakra fa-spin" style="font-size: 3rem; color: var(--primary-orange);"></i>
+                <p class="mt-3" style="color: var(--text-muted);">Loading temple details...</p>
+            </div>
+
+            <!-- Details Section -->
+            <div id="templeDetails" style="display: none;">
+                <!-- Breadcrumbs -->
+                <div style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">
+                    <a href="index.html">Home</a> / <a href="temples.html">Temples</a> / <span id="bcName">Detail</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;"
+                    class="details-grid">
+                    <!-- Image -->
+                    <div style="border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow-md);">
+                        <img id="templeImage" src="" alt="Temple"
+                            style="width: 100%; height: auto; object-fit: cover; aspect-ratio: 4/3;">
+                    </div>
+
+                    <!-- Info -->
+                    <div>
+                        <h1 id="templeName" style="font-size: 2.5rem; margin-bottom: 15px;"></h1>
+                        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 25px;">
+                            <i class="fa-solid fa-location-dot" style="color: var(--primary-orange);"></i>
+                            <span id="templeLocation"></span>
+                        </p>
+
+                        <div
+                            style="background: var(--white); padding: 25px; border-radius: var(--border-radius); border: 1px solid var(--border-color); margin-bottom: 25px;">
+                            <h3 style="margin-bottom: 15px; font-family: var(--font-body); font-size: 1.2rem;">About the
+                                Temple</h3>
+                            <p id="templeDescription" style="color: var(--text-muted); line-height: 1.8;"></p>
+                        </div>
+
+                        <div
+                            style="background: rgba(245, 158, 11, 0.1); padding: 25px; border-radius: var(--border-radius); border: 1px solid rgba(245, 158, 11, 0.2);">
+                            <h3
+                                style="margin-bottom: 15px; font-family: var(--font-body); font-size: 1.2rem; color: var(--secondary-gold);">
+                                Booking Information</h3>
+                            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                                <i class="fa-regular fa-clock"></i> Timings: 06:00 AM - 09:00 PM<br>
+                                <i class="fa-solid fa-ticket"></i> Entry Fee: Free (VIP Darshan available)
+                            </p>
+                            <a id="bookBtn" href="booking.html" class="btn"
+                                style="width: 100%; font-size: 1.1rem; padding: 15px;">
+                                Book Your Slot Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="text-center" style="display: none; padding: 100px 0;">
+                <i class="fa-solid fa-triangle-exclamation"
+                    style="font-size: 4rem; color: var(--primary-orange); margin-bottom: 20px;"></i>
+                <h2>Temple Not Found</h2>
+                <p class="mt-2 text-muted">The temple you are looking for does not exist or has been removed.</p>
+                <a href="temples.html" class="btn mt-4">Back to Temples</a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="padding-top: 0; border: none;">
+                &copy; 2024 Bhagti Marg. Built for College Project. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- CSS -->
+    <style>
+        @media (max-width: 900px) {
+            .details-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const templeId = urlParams.get('id');
+            if (templeId) fetchTempleDetails(templeId);
+            else document.getElementById('errorState').style.display = 'block';
+        });
+
+        async function fetchTempleDetails(id) {
+            try {
+                // MOCK DATA
+                await new Promise(res => setTimeout(res, 600));
+                const mockDb = {
+                    1: { name: 'Golden Temple', location: 'Amritsar, Punjab', image: 'assets/images/golden_temple.png', desc: 'The Golden Temple, also known as Harmandir Sahib, is a gurdwara located in the city of Amritsar, Punjab, India. It is the preeminent spiritual site of Sikhism.' },
+                    2: { name: 'Kashi Vishwanath', location: 'Varanasi, UP', image: 'assets/images/kashi_vishwanath.png', desc: 'Kashi Vishwanath Temple is one of the most famous Hindu temples dedicated to Lord Shiva. It is located in Varanasi, Uttar Pradesh, India.' },
+                    3: { name: 'Somnath Temple', location: 'Veraval, Gujarat', image: 'assets/images/somnath.png', desc: 'The Somnath temple located in Prabhas Patan near Veraval in Saurashtra on the western coast of Gujarat... is believed to be the first among the twelve jyotirlinga shrines.' },
+                    4: { name: 'Meenakshi Temple', location: 'Madurai, TN', image: 'assets/images/south_indian_temple.png', desc: 'Meenakshi Temple is a historic Hindu temple located on the southern bank of the Vaigai River in the temple city of Madurai, Tamil Nadu, India.' },
+                    5: { name: 'Kedarnath Temple', location: 'Uttarakhand', image: 'assets/images/mountain_temple.png', desc: 'Kedarnath Temple is a Hindu temple dedicated to the Hindu God Shiva. Located on the Garhwal Himalayan range near the Mandakini river.' }
+                };
+
+                const temple = mockDb[id];
+                if (temple) {
+                    document.getElementById('bcName').innerText = temple.name;
+                    document.getElementById('templeName').innerText = temple.name;
+                    document.getElementById('templeLocation').innerText = temple.location;
+                    document.getElementById('templeImage').src = temple.image;
+                    document.getElementById('templeDescription').innerText = temple.desc;
+                    document.getElementById('bookBtn').href = `booking.html?templeId=${id}`;
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('templeDetails').style.display = 'block';
+                } else {
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('errorState').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temple Booking System - Temples</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-brand">
+                <i class="fa-solid fa-dharmachakra"></i>
+                Bhagti Marg
+            </a>
+            <button class="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="nav-links">
+                <a href="index.html" class="nav-item">Home</a>
+                <a href="temples.html" class="nav-item active">Temples</a>
+                <a href="booking.html" class="nav-item">Bookings</a>
+            </div>
+            <div class="nav-buttons" id="auth-buttons">
+                <!-- Managed by target script.js -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header style="background: var(--primary-orange); color: white; padding: 60px 0; text-align: center;">
+        <div class="container">
+            <h1 style="color: white; font-size: 2.5rem; margin-bottom: 15px;">Sacred Destinations</h1>
+            <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto; opacity: 0.9;">Explore our curated list of
+                divine temples and plan your spiritual journey today.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-5">
+        <div class="container">
+            <!-- Search & Filter (Optional enhancement) -->
+            <div style="margin-bottom: 40px; display: flex; gap: 15px; flex-wrap: wrap;">
+                <input type="text" id="searchInput" class="form-control"
+                    placeholder="Search by temple name or location..." style="flex: 1; min-width: 250px;">
+                <button class="btn" id="searchBtn"><i class="fa-solid fa-search"></i> Search</button>
+            </div>
+
+            <!-- Loader -->
+            <div id="loader" class="text-center" style="padding: 50px 0;">
+                <i class="fa-solid fa-dharmachakra fa-spin" style="font-size: 3rem; color: var(--primary-orange);"></i>
+                <p class="mt-3" style="color: var(--text-muted);">Fetching sacred destinations...</p>
+            </div>
+
+            <!-- Temples Grid -->
+            <div id="templesGrid"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; display: none;">
+                <!-- Temple cards will be injected here via JS -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="text-center" style="padding: 50px 0; display: none;">
+                <i class="fa-solid fa-vihara" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                <h3 style="color: var(--text-muted);">No temples found</h3>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="padding-top: 0; border: none;">
+                &copy; 2024 Bhagti Marg. Built for College Project. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchTemples();
+        });
+
+        async function fetchTemples() {
+            const loader = document.getElementById('loader');
+            const grid = document.getElementById('templesGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            loader.style.display = 'block';
+            grid.style.display = 'none';
+            emptyState.style.display = 'none';
+
+            try {
+                // Adjust endpoint based on real backend API
+                // const temples = await apiRequest('/temples');
+
+                // MOCK DATA FOR UI PRESENTATION UNTIL API IS READY
+                const temples = [
+                    { id: 1, name: 'Golden Temple', location: 'Amritsar, Punjab', image: 'assets/images/golden_temple.png' },
+                    { id: 2, name: 'Kashi Vishwanath', location: 'Varanasi, UP', image: 'assets/images/kashi_vishwanath.png' },
+                    { id: 3, name: 'Somnath Temple', location: 'Veraval, Gujarat', image: 'assets/images/somnath.png' },
+                    { id: 4, name: 'Meenakshi Temple', location: 'Madurai, TN', image: 'assets/images/south_indian_temple.png' },
+                    { id: 5, name: 'Kedarnath Temple', location: 'Uttarakhand', image: 'assets/images/mountain_temple.png' },
+                    { id: 6, name: 'Tirupati Balaji', location: 'Andhra Pradesh', image: 'https://images.unsplash.com/photo-1590050860570-5b6510e16bc9?auto=format&fit=crop&q=80&w=800' }
+                ];
+
+                // Simulate network delay
+                await new Promise(res => setTimeout(res, 800));
+
+                if (temples && temples.length > 0) {
+                    renderTemples(temples);
+                } else {
+                    emptyState.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading temples:', error);
+                emptyState.innerHTML = `<h3 style="color: red;">Failed to load temples</h3><p>${error.message}</p>`;
+                emptyState.style.display = 'block';
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        function renderTemples(temples) {
+            const grid = document.getElementById('templesGrid');
+            grid.innerHTML = '';
+
+            temples.forEach(temple => {
+                const imgUrl = temple.image || CONFIG.FALLBACK_TEMPLE_IMG;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div style="position: relative; overflow: hidden; height: 200px;">
+                        <img src="${imgUrl}" alt="${temple.name}" style="width: 100%; height: 100%; object-fit: cover; transition: var(--transition);">
+                    </div>
+                    <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+                        <h3 style="margin-bottom: 10px; font-size: 1.5rem; color: var(--text-main);">${temple.name}</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
+                            <i class="fa-solid fa-location-dot" style="color: var(--primary-orange); margin-right: 5px;"></i> ${temple.location}
+                        </p>
+                        <div style="margin-top: auto;">
+                            <!-- Pass ID as URL parameter -->
+                            <a href="temple-details.html?id=${temple.id}" class="btn btn-outline" style="width: 100%;">View Details</a>
+                        </div>
+                    </div>
+                `;
+                // Add minor hover effect to inner image
+                card.addEventListener('mouseenter', () => {
+                    card.querySelector('img').style.transform = 'scale(1.05)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.querySelector('img').style.transform = 'scale(1)';
+                });
+
+                grid.appendChild(card);
+            });
+
+            grid.style.display = 'grid';
+        }
+    </script>
+</body>
+
+</html>

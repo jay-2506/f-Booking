@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temple Booking System - Register</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-brand">
+                <i class="fa-solid fa-dharmachakra"></i>
+                Bhagti Marg
+            </a>
+            <button class="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="nav-links">
+                <a href="index.html" class="nav-item">Home</a>
+                <a href="temples.html" class="nav-item">Temples</a>
+                <a href="booking.html" class="nav-item">Bookings</a>
+            </div>
+            <div class="nav-buttons" id="auth-buttons">
+                <!-- Managed by target script.js -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Register Area -->
+    <main class="auth-container">
+        <div class="auth-card">
+            <h2>Create Account</h2>
+            <p>Join us to book your temple visits seamlessly.</p>
+
+            <form id="registerForm">
+                <div id="registerError"
+                    style="color: red; margin-bottom: 15px; font-size: 0.9rem; text-align: center; display: none;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" required placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required placeholder="Create a password">
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="registerBtn">
+                    Create Account
+                </button>
+
+                <div class="auth-links">
+                    Already have an account? <a href="login.html">Sign In</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="padding-top: 0; border: none;">
+                &copy; 2024 Bhagti Marg . Built for College Project. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('registerError');
+            const submitBtn = document.getElementById('registerBtn');
+
+            errorDiv.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating...';
+
+            try {
+                // Adjust endpoint if needed based on the actual backend route
+                const data = await apiRequest('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                showToast('Registration successful! Please login.', 'success');
+                window.location.href = 'login.html'; // Redirect to login
+            } catch (err) {
+                errorDiv.innerText = err.message || 'Registration failed. Please try again.';
+                errorDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Create Account';
+            }
+        });
+    </script>
+</body>
+
+</html>

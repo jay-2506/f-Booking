@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temple Booking System - Login</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-brand">
+                <i class="fa-solid fa-dharmachakra"></i>
+                Bhagti Marg
+            </a>
+            <button class="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="nav-links">
+                <a href="index.html" class="nav-item">Home</a>
+                <a href="temples.html" class="nav-item">Temples</a>
+                <a href="booking.html" class="nav-item">Bookings</a>
+            </div>
+            <div class="nav-buttons" id="auth-buttons">
+                <!-- Managed by target script.js -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Area -->
+    <main class="auth-container">
+        <div class="auth-card">
+            <h2>Welcome Back</h2>
+            <p>Please enter your details to sign in.</p>
+
+            <form id="loginForm">
+                <div id="loginError"
+                    style="color: red; margin-bottom: 15px; font-size: 0.9rem; text-align: center; display: none;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" required placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required
+                        placeholder="Enter your password">
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;" id="loginBtn">
+                    Sign In
+                </button>
+
+                <div class="auth-links">
+                    Don't have an account? <a href="register.html">Sign Up</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="padding-top: 0; border: none;">
+                &copy; 2024 Bhagti Marg. Built for College Project. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            const submitBtn = document.getElementById('loginBtn');
+
+            errorDiv.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Signing In...';
+
+            try {
+                // Adjust endpoint if needed based on the actual backend route
+                const data = await apiRequest('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+
+                // Assuming backend returns { token, user: { ... } }
+                if (data && data.token) {
+                    localStorage.setItem('temple_auth_token', data.token);
+                    localStorage.setItem('temple_user', JSON.stringify(data.user || { name: 'User' }));
+
+                    showToast('Login successful!', 'success');
+                    window.location.href = 'index.html'; // Redirect to home
+                } else {
+                    throw new Error('Invalid response from server');
+                }
+            } catch (err) {
+                errorDiv.innerText = err.message || 'Login failed. Please check your credentials.';
+                errorDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Sign In';
+            }
+        });
+    </script>
+</body>
+
+</html>
