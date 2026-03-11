@@ -106,7 +106,7 @@
                     method: 'POST',
                     body: JSON.stringify({ name, email, phone, password })
                 });
-
+                localStorage.setItem('temple_user', JSON.stringify(data.token || { name: 'User' }));
                 showToast('Registration successful! Please login.', 'success');
                 window.location.href = '/index.html'; // Redirect to index
             } catch (err) {
