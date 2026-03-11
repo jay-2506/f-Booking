@@ -8,7 +8,7 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/component/styles.css">
 </head>
 
 <body>
@@ -16,7 +16,7 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container">
-            <a href="index.html" class="nav-brand">
+            <a href="/index.html" class="nav-brand">
                 <i class="fa-solid fa-dharmachakra"></i>
                 Bhagti Marg
             </a>
@@ -26,15 +26,15 @@
             </button>
 
             <div class="nav-links">
-                <a href="index.html" class="nav-item active">Home</a>
-                <a href="temples.html" class="nav-item">Temples</a>
-                <a href="booking.html" class="nav-item">Bookings</a>
+                <a href="/index.html" class="nav-item active">Home</a>
+                <a href="/component/temples.html" class="nav-item">Temples</a>
+                <a href="/component/booking.html" class="nav-item">Bookings</a>
             </div>
 
             <div class="nav-buttons" id="auth-buttons">
                 <!-- Injected via script.js based on auth state -->
-                <a href="login.html" class="nav-item">Login</a>
-                <a href="register.html" class="btn" style="padding: 8px 16px;">Sign Up</a>
+                <a href="/component/login.html" class="nav-item">Login</a>
+                <a href="/component/register.html" class="btn" style="padding: 8px 16px;">Sign Up</a>
             </div>
         </div>
     </nav>
@@ -51,10 +51,14 @@
                 <p style="font-size: 1.2rem; margin-bottom: 30px; color: #f3f4f6; font-family: var(--font-body);">Book
                     your slots seamlessly for temples across the country. Avoid queues, embrace spirituality, and enjoy
                     a peaceful darshan.</p>
-                <div style="display: flex; gap: 15px;">
-                    <a href="temples.html" class="btn" style="padding: 15px 35px; font-size: 1.1rem;">
-                        Explore Temples <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 30px;">
+                    <div style="display: flex; background: white; border-radius: 8px; overflow: hidden; width: 100%; max-width: 500px; box-shadow: var(--shadow-lg);">
+                        <input type="text" id="heroSearchInput" placeholder="Search for temples or locations..." 
+                            style="flex: 1; border: none; padding: 15px 20px; font-size: 1rem; outline: none;">
+                        <button onclick="searchTemples()" class="btn" style="border-radius: 0; padding: 0 25px;">
+                            <i class="fa-solid fa-search"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,50 +70,18 @@
             <h2 class="section-title">Popular Destinations</h2>
             <p class="section-subtitle">Discover some of our most frequently visited and highly revered temples.</p>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-                <!-- Sample Card 1 -->
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1571536802807-3cab215b3ce5?auto=format&fit=crop&q=80&w=800"
-                        alt="Golden Temple" style="height: 200px; object-fit: cover;">
-                    <div style="padding: 20px;">
-                        <h3 style="margin-bottom: 10px; font-size: 1.5rem; color: var(--text-main);">Golden Temple</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
-                            <i class="fa-solid fa-location-dot"
-                                style="color: var(--primary-orange); margin-right: 5px;"></i> Amritsar, Punjab
-                        </p>
-                        <a href="temples.html" class="btn btn-outline" style="width: 100%;">View Details</a>
-                    </div>
-                </div>
-                <!-- Sample Card 2 -->
-                <div class="card">
-                    <img src="assets/images/kashi_vishwanath.png" alt="Kashi Vishwanath"
-                        style="height: 200px; object-fit: cover;">
-                    <div style="padding: 20px;">
-                        <h3 style="margin-bottom: 10px; font-size: 1.5rem; color: var(--text-main);">Kashi Vishwanath
-                        </h3>
-                        <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
-                            <i class="fa-solid fa-location-dot"
-                                style="color: var(--primary-orange); margin-right: 5px;"></i> Varanasi, UP
-                        </p>
-                        <a href="temples.html" class="btn btn-outline" style="width: 100%;">View Details</a>
-                    </div>
-                </div>
-                <!-- Sample Card 3 -->
-                <div class="card">
-                    <img src="assets/images/somnath.png" alt="Somnath Temple" style="height: 200px; object-fit: cover;">
-                    <div style="padding: 20px;">
-                        <h3 style="margin-bottom: 10px; font-size: 1.5rem; color: var(--text-main);">Somnath Temple</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
-                            <i class="fa-solid fa-location-dot"
-                                style="color: var(--primary-orange); margin-right: 5px;"></i> Veraval, Gujarat
-                        </p>
-                        <a href="temples.html" class="btn btn-outline" style="width: 100%;">View Details</a>
-                    </div>
-                </div>
+            <div id="templeLoader" class="text-center" style="padding: 50px 0;">
+                <i class="fa-solid fa-dharmachakra fa-spin" style="font-size: 3rem; color: var(--primary-orange);"></i>
+                <p class="mt-3" style="color: var(--text-muted);">Fetching popular destinations...</p>
+            </div>
+
+            <div id="templeContainer"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; display: none;">
+                <!-- Temples will be injected here via script -->
             </div>
 
             <div class="text-center mt-5">
-                <a href="temples.html" class="btn">View All Temples</a>
+                <a href="/component/temples.html" class="btn">View All Temples</a>
             </div>
         </div>
     </section>
@@ -172,10 +144,10 @@
                 <div class="footer-links">
                     <h4>Quick Links</h4>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="temples.html">Temples</a></li>
-                        <li><a href="booking.html">Book Slot</a></li>
-                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="/index.html">Home</a></li>
+                        <li><a href="/component/temples.html">Temples</a></li>
+                        <li><a href="/component/booking.html">Book Slot</a></li>
+                        <li><a href="/component/contact.html">Contact Us</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
@@ -194,7 +166,75 @@
     </footer>
 
     <!-- Custom JS -->
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchFeaturedTemples();
+
+            // Handle Enter key on hero search
+            const heroInput = document.getElementById('heroSearchInput');
+            if (heroInput) {
+                heroInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') searchTemples();
+                });
+            }
+        });
+
+        function searchTemples() {
+            const query = document.getElementById('heroSearchInput').value;
+            if (query.trim()) {
+                window.location.href = `/component/temples.html?search=${encodeURIComponent(query)}`;
+            } else {
+                window.location.href = '/component/temples.html';
+            }
+        }
+
+        async function fetchFeaturedTemples() {
+            const loader = document.getElementById('templeLoader');
+            const container = document.getElementById('templeContainer');
+
+            try {
+                // Fetch temples from backend
+                const temples = await apiRequest('/temples');
+
+                if (temples && temples.length > 0) {
+                    // Show only first 3 on home page
+                    renderTemples(temples.slice(0, 3));
+                } else {
+                    loader.innerHTML = '<p style="color: var(--text-muted);">No temples available at the moment.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching temples:', error);
+                loader.innerHTML = '<p style="color: red;">Failed to load temples.</p>';
+            }
+        }
+
+        function renderTemples(temples) {
+            const loader = document.getElementById('templeLoader');
+            const container = document.getElementById('templeContainer');
+            container.innerHTML = '';
+
+            temples.forEach(temple => {
+                const imgUrl = temple.image || CONFIG.FALLBACK_TEMPLE_IMG;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="${imgUrl}" alt="${temple.name}" style="height: 200px; object-fit: cover;">
+                    <div style="padding: 20px;">
+                        <h3 style="margin-bottom: 10px; font-size: 1.5rem; color: var(--text-main);">${temple.name}</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
+                            <i class="fa-solid fa-location-dot" style="color: var(--primary-orange); margin-right: 5px;"></i> ${temple.location}
+                        </p>
+                        <a href="/component/temple-details.html?id=${temple._id}" class="btn btn-outline" style="width: 100%;">View Details</a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            loader.style.display = 'none';
+            container.style.display = 'grid';
+        }
+    </script>
 </body>
 
 </html>

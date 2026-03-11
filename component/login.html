@@ -8,14 +8,14 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/component/styles.css">
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container">
-            <a href="index.html" class="nav-brand">
+            <a href="/index.html" class="nav-brand">
                 <i class="fa-solid fa-dharmachakra"></i>
                 Bhagti Marg
             </a>
@@ -23,9 +23,9 @@
                 <i class="fa-solid fa-bars"></i>
             </button>
             <div class="nav-links">
-                <a href="index.html" class="nav-item">Home</a>
-                <a href="temples.html" class="nav-item">Temples</a>
-                <a href="booking.html" class="nav-item">Bookings</a>
+                <a href="/index.html" class="nav-item">Home</a>
+                <a href="/component/temples.html" class="nav-item">Temples</a>
+                <a href="/component/booking.html" class="nav-item">Bookings</a>
             </div>
             <div class="nav-buttons" id="auth-buttons">
                 <!-- Managed by target script.js -->
@@ -60,7 +60,7 @@
                 </button>
 
                 <div class="auth-links">
-                    Don't have an account? <a href="register.html">Sign Up</a>
+                    Don't have an account? <a href="/component/register.html">Sign Up</a>
                 </div>
             </form>
         </div>
@@ -76,7 +76,7 @@
     </footer>
 
     <!-- Custom JS -->
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -102,7 +102,7 @@
                     localStorage.setItem('temple_user', JSON.stringify(data.user || { name: 'User' }));
 
                     showToast('Login successful!', 'success');
-                    window.location.href = 'index.html'; // Redirect to home
+                    window.location.href = '/index.html'; // Redirect to home
                 } else {
                     throw new Error('Invalid response from server');
                 }

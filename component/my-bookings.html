@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Temple Booking System - My Bookings</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/component/styles.css">
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container">
-            <a href="index.html" class="nav-brand">
+            <a href="/index.html" class="nav-brand">
                 <i class="fa-solid fa-dharmachakra"></i>
                 Bhagti Marg
             </a>
@@ -21,9 +21,9 @@
                 <i class="fa-solid fa-bars"></i>
             </button>
             <div class="nav-links">
-                <a href="index.html" class="nav-item">Home</a>
-                <a href="temples.html" class="nav-item">Temples</a>
-                <a href="booking.html" class="nav-item">Bookings</a>
+                <a href="/index.html" class="nav-item">Home</a>
+                <a href="/component/temples.html" class="nav-item">Temples</a>
+                <a href="/component/booking.html" class="nav-item">Bookings</a>
             </div>
             <div class="nav-buttons" id="auth-buttons">
                 <!-- Managed by target script.js -->
@@ -37,7 +37,8 @@
             <div
                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
                 <h1 style="color: var(--primary-orange);">My Bookings</h1>
-                <a href="temples.html" class="btn btn-outline"><i class="fa-solid fa-plus"></i> New Booking</a>
+                <a href="/component/temples.html" class="btn btn-outline"><i class="fa-solid fa-plus"></i> New
+                    Booking</a>
             </div>
 
             <div id="loader" class="text-center" style="padding: 50px 0; display: none;">
@@ -49,7 +50,7 @@
                 <i class="fa-solid fa-lock" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 20px;"></i>
                 <h3 style="margin-bottom: 10px;">Login Required</h3>
                 <p style="color: var(--text-muted); margin-bottom: 20px;">Please login to view your booking history.</p>
-                <a href="login.html" class="btn">Login</a>
+                <a href="/component/login.html" class="btn">Login</a>
             </div>
 
             <!-- List Container -->
@@ -63,7 +64,7 @@
                 <h3 style="margin-bottom: 10px; color: var(--text-muted);">No Bookings Found</h3>
                 <p style="color: var(--text-muted); margin-bottom: 20px;">You haven't made any temple slot bookings yet.
                 </p>
-                <a href="temples.html" class="btn">Explore Temples</a>
+                <a href="/component/temples.html" class="btn">Explore Temples</a>
             </div>
 
         </div>
@@ -79,7 +80,7 @@
     </footer>
 
     <!-- Custom JS -->
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             if (!STATE.token) {
@@ -97,18 +98,11 @@
             loader.style.display = 'block';
 
             try {
-                // Adjust endpoint based on API
-                // const bookings = await apiRequest('/bookings/my-bookings');
+                // Real API fetch
+                const bookings = await apiRequest('/bookings/my');
 
-                // MOCK FETCH
-                await new Promise(res => setTimeout(res, 800));
-                const mockBookings = [
-                    { id: '101', templeName: 'Golden Temple, Amritsar', date: '2024-11-15', timeSlot: '10:00-12:00', devotees: 2, status: 'Confirmed', bookedAt: '2024-10-01' },
-                    { id: '102', templeName: 'Kashi Vishwanath', date: '2024-05-20', timeSlot: '18:00-20:00', devotees: 4, status: 'Completed', bookedAt: '2024-04-10' }
-                ];
-
-                if (mockBookings && mockBookings.length > 0) {
-                    renderBookings(mockBookings, container);
+                if (bookings && bookings.length > 0) {
+                    renderBookings(bookings, container);
                 } else {
                     emptyState.style.display = 'block';
                 }
@@ -125,8 +119,32 @@
             container.innerHTML = '';
 
             bookings.forEach(b => {
-                const isConfirmed = b.status === 'Confirmed';
-                const statusColor = isConfirmed ? '#10b981' : '#6b7280'; // green for confirmed, gray for others
+                // Map backend fields to frontend display
+                const templeName = b.templeId?.name || 'Unknown Temple';
+                const templeLocation = b.templeId?.location || '';
+                
+                // Better date handling
+                let date = 'N/A';
+                if (b.date) {
+                    const d = new Date(b.date);
+                    date = isNaN(d.getTime()) ? 'N/A' : d.toLocaleDateString();
+                }
+                
+                const timeSlot = b.timeSlot || 'N/A';
+                const devotees = b.devotees || 'N/A';
+                const status = b.status || 'booked'; 
+                
+                let bookedAt = 'N/A';
+                if (b.createdAt) {
+                    const d = new Date(b.createdAt);
+                    bookedAt = isNaN(d.getTime()) ? 'N/A' : d.toLocaleDateString();
+                }
+                
+                const id = b._id;
+
+                // Status colors
+                const statusColor = (status === 'Confirmed' || status === 'booked') ? '#10b981' : 
+                                   (status === 'Cancelled' ? '#ef4444' : '#6b7280');
 
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -137,30 +155,30 @@
                 card.innerHTML = `
                     <div style="flex: 1; min-width: 250px; padding: 25px;">
                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
-                            <h3 style="font-size: 1.4rem; color: var(--text-main);">${b.templeName}</h3>
+                            <h3 style="font-size: 1.4rem; color: var(--text-main);">${templeName}</h3>
                             <span style="background: ${statusColor}20; color: ${statusColor}; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
-                                ${b.status}
+                                ${status}
                             </span>
                         </div>
                         
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
                             <div>
                                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2px;">Date</p>
-                                <p style="font-weight: 500;"><i class="fa-regular fa-calendar" style="color: var(--primary-orange);"></i> ${b.date}</p>
+                                <p style="font-weight: 500;"><i class="fa-regular fa-calendar" style="color: var(--primary-orange);"></i> ${date}</p>
                             </div>
                             <div>
                                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2px;">Slot</p>
-                                <p style="font-weight: 500;"><i class="fa-regular fa-clock" style="color: var(--primary-orange);"></i> ${b.timeSlot}</p>
+                                <p style="font-weight: 500;"><i class="fa-regular fa-clock" style="color: var(--primary-orange);"></i> ${timeSlot}</p>
                             </div>
                             <div>
                                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2px;">Devotees</p>
-                                <p style="font-weight: 500;"><i class="fa-solid fa-users" style="color: var(--primary-orange);"></i> ${b.devotees} Person(s)</p>
+                                <p style="font-weight: 500;"><i class="fa-solid fa-users" style="color: var(--primary-orange);"></i> ${devotees} ${devotees === 'N/A' ? '' : 'Person(s)'}</p>
                             </div>
                         </div>
                         
                         <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 0.8rem; color: #9ca3af;">Booking Ref: #${b.id} | Booked on: ${b.bookedAt}</span>
-                            ${isConfirmed ? `<button onclick="cancelBooking('${b.id}')" class="btn-outline" style="border: 1px solid #ef4444; color: #ef4444; padding: 5px 15px; border-radius: 6px; background: transparent; cursor: pointer;">Cancel Booking</button>` : ''}
+                            <span style="font-size: 0.8rem; color: #9ca3af;">Booking Ref: #${id} | Booked on: ${bookedAt}</span>
+                            ${status !== 'Cancelled' ? `<button onclick="cancelBooking('${id}')" class="btn-outline" style="border: 1px solid #ef4444; color: #ef4444; padding: 5px 15px; border-radius: 6px; background: transparent; cursor: pointer;">Cancel Booking</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -172,11 +190,15 @@
 
         async function cancelBooking(id) {
             if (confirm('Are you sure you want to cancel this booking?')) {
-                // Perform API cancellation logic
-                alert(`Booking #${id} cancelled. (Demo Mode)`);
-                // reload list
-                document.getElementById('bookingsContainer').style.display = 'none';
-                fetchUserBookings();
+                try {
+                    await apiRequest(`/bookings/cancel/${id}`, { method: 'DELETE' });
+                    showToast('Booking cancelled successfully', 'success');
+                    // reload list
+                    document.getElementById('bookingsContainer').style.display = 'none';
+                    fetchUserBookings();
+                } catch (error) {
+                    showToast(error.message || 'Failed to cancel booking', 'error');
+                }
             }
         }
     </script>

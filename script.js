@@ -50,15 +50,15 @@ function updateAuthUI() {
     if (STATE.token && STATE.user) {
         // User is logged in
         authButtonsContainer.innerHTML = `
-      <a href="my-bookings.html" class="nav-item">My Bookings</a>
+      <a href="/component/my-bookings.html" class="nav-item">My Bookings</a>
       <span class="nav-item" style="color: var(--text-muted);">Hi, ${STATE.user.name || 'User'}</span>
       <button onclick="logout()" class="btn btn-outline" style="padding: 8px 16px;">Logout</button>
     `;
     } else {
         // User is not logged in
         authButtonsContainer.innerHTML = `
-      <a href="login.html" class="nav-item">Login</a>
-      <a href="register.html" class="btn" style="padding: 8px 16px;">Sign Up</a>
+      <a href="/component/login.html" class="nav-item">Login</a>
+      <a href="/component/register.html" class="btn" style="padding: 8px 16px;">Sign Up</a>
     `;
     }
 }
@@ -70,7 +70,7 @@ function logout() {
     STATE.token = null;
     STATE.user = null;
 
-    window.location.href = 'index.html'; // Redirect to home
+    window.location.href = '/index.html'; // Redirect to home
 }
 
 /**
